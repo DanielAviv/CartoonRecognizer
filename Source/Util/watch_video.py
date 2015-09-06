@@ -10,7 +10,9 @@ import cv2
 
 cap = cv2.VideoCapture('D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset1\\data0000.mkv')
 
-print(cap.isOpened())
+# Dont know wtf is happening here 
+# print cap.set(0,1000000)
+# print cap.set(5,60)
 
 while(cap.isOpened()):
     ret, frame = cap.read()
