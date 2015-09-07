@@ -23,38 +23,6 @@ RESULT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\R
 # This relates to the amount of frames we are going to get:
 # FPS / FRAMESKIP * amount of seconds = amount of frames. 
 FRAMESKIP = 1800
-
-"""
-This function receives the path of a video and saves frames at a constant rate defined by RATE in
-RESULT_DIRECTORY.
-DON'T USE THIS FUNCTION, IS A WAY SLOWER VERSION OF compute_frames()
-"""
-def slow_compute_frames(video_path, video_name):
-	print "Deprecation Warning: You should not be using this."
-	
-	video = cv2.VideoCapture(video_path)
-	frames_seen = 0
-	frames_retrieved = 0
-	
-	while(video.isOpened()):
-		video_continues = video.grab()
-		
-		if video_continues == False:
-			break
-			
-		if (frames_seen % FRAMESKIP) == 0:
-			video_continues, frame = video.retrieve()
-			
-			frame_name = video_name + "_" + str(frames_retrieved) + ".jpg"
-			frame_path = join(RESULT_DIRECTORY, frame_name)
-			cv2.imwrite(frame_path, frame)
-			
-			frames_retrieved += 1
-			
-		frames_seen += 1
-	
-	print str(frames_retrieved) + " frames retrieved and saved."
-	video.release()
 	
 """
 This function receives the path of a video and saves frames at a constant rate defined by RATE in
