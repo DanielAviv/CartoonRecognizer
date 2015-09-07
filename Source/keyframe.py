@@ -22,13 +22,16 @@ RESULT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\R
 
 # This relates to the amount of frames we are going to get:
 # FPS / FRAMESKIP * amount of seconds = amount of frames. 
-FRAMESKIP = 3600
+FRAMESKIP = 1800
 
 """
 This function receives the path of a video and saves frames at a constant rate defined by RATE in
 RESULT_DIRECTORY.
+DON'T USE THIS FUNCTION, IS A WAY SLOWER VERSION OF compute_frames()
 """
-def compute_frames(video_path, video_name):
+def slow_compute_frames(video_path, video_name):
+	print "Deprecation Warning: You should not be using this."
+	
 	video = cv2.VideoCapture(video_path)
 	frames_seen = 0
 	frames_retrieved = 0
@@ -49,6 +52,37 @@ def compute_frames(video_path, video_name):
 			frames_retrieved += 1
 			
 		frames_seen += 1
+	
+	print str(frames_retrieved) + " frames retrieved and saved."
+	video.release()
+	
+"""
+This function receives the path of a video and saves frames at a constant rate defined by RATE in
+RESULT_DIRECTORY.
+"""
+def compute_frames(video_path, video_name):
+	video = cv2.VideoCapture(video_path)
+	
+	video_fps = video.get(cv2.cv.CV_CAP_PROP_FPS)
+	msec_skip =  (1000 / video_fps) * FRAMESKIP
+	frames_retrieved = 0
+	
+	while(video.isOpened()):
+		video_continues = video.grab()
+		
+		if video_continues == False:
+			break
+			
+		video_continues, frame = video.retrieve()
+		
+		frame_name = video_name + "_" + str(frames_retrieved) + ".jpg"
+		frame_path = join(RESULT_DIRECTORY, frame_name)
+		cv2.imwrite(frame_path, frame)
+		
+		current_position = video.get(cv2.cv.CV_CAP_PROP_POS_MSEC)
+		video.set(cv2.cv.CV_CAP_PROP_POS_MSEC, current_position + msec_skip)
+		
+		frames_retrieved += 1
 	
 	print str(frames_retrieved) + " frames retrieved and saved."
 	video.release()
