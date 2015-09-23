@@ -16,7 +16,7 @@ __status__ = "Development"
 
 #Default directory, will be favoured over the one in the arguments.
 #If empty, won't be used.
-DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset1"
+DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset2"
 
 """
 This returns the formatted name as described in the header.

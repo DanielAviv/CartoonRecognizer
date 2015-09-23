@@ -19,8 +19,8 @@ __status__ = "Development"
 
 #Default directory for the database and for the results, will be favoured over the ones in 
 #the arguments. The results will only be stored if the option -s is active.
-DATA_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset1"
-RESULT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\Results5"
+DATA_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset2"
+RESULT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResultsMartes"
 
 #This is the factor by which the images will be resized.
 #Original_width/height * RESIZE_FACTOR = New_width/height 
@@ -28,7 +28,7 @@ RESIZE_FACTOR = 0.3
 
 #This relates to the amount of frames we are going to get:
 #FPS / FRAMESKIP * amount of seconds = amount of frames. 
-FRAMESKIP = 6
+FRAMESKIP = 10
 
 #This constant determines if the frames are saved along with the output position file.
 SAVE_FRAMES = False
@@ -44,15 +44,16 @@ processed.
 def compute_output(video_path, video_name, result_path):
 	video = cv2.VideoCapture(video_path)
 	video_fps = video.get(cv2.cv.CV_CAP_PROP_FPS)
-	video_total_msec = 1000 * video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) / video_fps
-	msec_skip = (1000 / video_fps) * FRAMESKIP
+	video_total_msec = 100 * video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) / video_fps
+	msec_skip = (100 / video_fps) * FRAMESKIP
 
 	output_file_path = join(result_path, OUTPUT_FILE_NAME)
 	output_file = open(output_file_path, "a")
 	
-	output_file.write("VIDEO: " + video_name + "\n")
+	output_file.write(video_path + "\n")
 	
 	msec_array = arange(0, video_total_msec, msec_skip)
+	#msec_array = arange(0, video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT), FRAMESKIP)
 	for msec in msec_array:
 		output_file.write(str(msec) + ",")
 
@@ -77,6 +78,7 @@ def compute_frames(video_path, video_name, result_path, resize, save_frames):
 	if save_frames:
 		for msec in msec_array:
 			video.set(cv2.cv.CV_CAP_PROP_POS_MSEC, msec)
+			#video.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, msec)
 			video_continues = video.grab()
 			
 			if video_continues == False:
