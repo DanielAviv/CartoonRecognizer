@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This is an almost exact copy of the example found in:
-http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_gui/py_video_display/py_video_display.html
+
 """
 
 import numpy as np
@@ -14,14 +13,14 @@ def rectanglify(img,x, y, w, h):
 cap = cv2.VideoCapture('D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset2\\data0000.mkv')
 
 
-print cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES,30121)
+print cap.set(cv2.cv.CV_CAP_PROP_POS_FRAMES,30901)
 
 
 ret, frame = cap.read()
 	#asdf = cap.get(cv2.cv.CV_CAP_PROP_POS_MSEC)
 	#cap.set(cv2.cv.CV_CAP_PROP_POS_MSEC, asdf*10)
 
-rectanglify(frame, 446 ,214,  66 , 66)
+rectanglify(frame, 1318 ,82,  312 , 374)
 
 
 cv2.imshow('frame',frame)
