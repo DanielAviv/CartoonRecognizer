@@ -41,10 +41,10 @@ INPUTS:
  - A text file containing the squares with the detected faces.
 """
 def do_detect(videos, classifier):
-	print classifier
 	face_cascade = cv2.CascadeClassifier(classifier)
 	output_file = open(OUTPUT_FILE_NAME, "a")
 
+	print "Detection started, this will take several minutes."
 	for video_path in videos[:1]:
 		frames_seen = 0
 		frames_analized = 0
@@ -76,7 +76,7 @@ def do_detect(videos, classifier):
 			frames_seen += 1
 
 		output_file.write("\n")
-		print str(frames_analized) + " frames analized. "
+		print "\n" + str(frames_analized) + " frames analized. "
 		print "From which " + str(frames_with_faces) + " work. "
 		print "From which " + str(face_count) + " faces has been found."
 		video.release()
@@ -110,7 +110,7 @@ def main(argv=None):
 			print "Detector not supported yet"
 			return 1
 		else:
-			return do_detect(videos, ".\\Data\\animecascade_DAN.xml")
+			return do_detect(videos, ".\\Data\\LBPcascade_animeface_woo.xml")
 			
 	except IOError:
 		print "You must give the data path."

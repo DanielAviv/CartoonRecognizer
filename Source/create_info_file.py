@@ -5,7 +5,8 @@ This executable creates a both .info file (negative and positive examples)
 necessary to the process of detection.
 """
 
-from os import listdir
+import sys
+from os import listdir, remove
 from os.path import isfile, join
 import argparse
 
@@ -17,7 +18,7 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #This is the location of the dataset. If empty, the console UI will ask for it.
-DATA_PATH = "D:\\DetectorTrainingNegative"
+DATA_PATH = ""
 
 #Paths where the output files are located.
 POS_PATH = ".\\Data\\anime_faces.info"
@@ -35,7 +36,7 @@ def write_examples(data_path, with_size):
 	output_file = None
 	if with_size == True:
 		output_file = open(POS_PATH, "a")
-	else
+	else:
 		output_file = open(NEG_PATH, "a")
 
 	for each_positive in positive_img:
@@ -52,6 +53,7 @@ def write_examples(data_path, with_size):
 		output_file.write("\n")
 
 	output_file.close()
+	print "Done!"
 	
 	return 0
 
@@ -70,8 +72,8 @@ def main(argv=None):
 	
 	if DATA_PATH == "":
 		print("Where is the data located?")
-		data_path = sys.stdin.readline()
-		
+		data_path = sys.stdin.readline()[:-1]
+	
 	return write_examples(data_path, not(argv.sanssize))
 
 if __name__ == "__main__":
