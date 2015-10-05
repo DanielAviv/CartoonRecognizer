@@ -42,10 +42,10 @@ INPUTS:
 """
 def do_detect(videos, classifier):
 	face_cascade = cv2.CascadeClassifier(classifier)
-	output_file = open(OUTPUT_FILE_NAME, "a")
+	output_file = open(OUTPUT_FILE_NAME, "w")
 
 	print "Detection started, this will take several minutes."
-	for video_path in videos[:1]:
+	for video_path in videos[:2]:
 		frames_seen = 0
 		frames_analized = 0
 		frames_with_faces = 0
@@ -67,17 +67,19 @@ def do_detect(videos, classifier):
 
 				if len(faces) != 0:
 					frame_position = video.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
-					output_file.write(str(frame_position) + ":")
-					output_file.write(str(faces) + "\n")
+					output_file.write(str(frame_position) + "\n")
+					for face in faces:
+						output_file.write(str(face) + ";")
+					output_file.write("\n")
 					
 					face_count += len(faces)
 					frames_with_faces += 1
 				frames_analized += 1
 			frames_seen += 1
 
-		output_file.write("\n")
-		print "\n" + str(frames_analized) + " frames analized. "
-		print "From which " + str(frames_with_faces) + " work. "
+		output_file.write("ENDFILE\n")
+		print "\n" + str(frames_analized) + " frames analized."
+		print "From which " + str(frames_with_faces) + " work."
 		print "From which " + str(face_count) + " faces has been found."
 		video.release()
 		
@@ -95,11 +97,6 @@ def main(argv=None):
 	if DATA_PATH == "":
 		print("Where is the data located?")
 		data_path = sys.stdin.readline()
-		
-	try:
-		remove(OUTPUT_FILE_NAME)
-	except OSError:
-		pass
 	
 	try:
 		videos = [ join(data_path, data) for data in listdir(data_path) if isfile(join(data_path, data)) ]
