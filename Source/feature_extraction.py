@@ -39,8 +39,27 @@ def parse_input_file(lines):
 """
 """
 def calc_descriptor(data_dictionary, video_path):
-	print data_dictionary
-	return None
+	result = []
+	
+	for frame_pos, faces in data_dictionary.iteritems():
+		video = cv2.VideoCapture(video_path)
+		video.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_pos)
+		ret, frame = video.read()
+			
+		for face in faces[0:1]:
+			x, y, w, h = face
+			histogram = hue_histogram(frame[y:y+h, x:x+w])
+			
+		video.release()
+		break
+
+	return 0
+
+"""
+"""
+def hue_histogram(image):
+	cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+	cv2.calcHist([image], [0], None, [256], [0,179])
 
 def main(argv=None):
 	input_path = INPUT_PATH
@@ -58,9 +77,11 @@ def main(argv=None):
 		for line in input_file:	
 			if line.startswith("ENDFILE"):
 				parsed_data = parse_input_file(file_results)
-				calc_descriptor(parsed_data, file_results[0])
-				
+				#We remove the "SOURCE: " tag and the newline character.
+				calc_descriptor(parsed_data, file_results[0][8:-1])
+
 				file_results = []
+				break
 			else:
 				file_results.append(line)
 				
