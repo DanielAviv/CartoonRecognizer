@@ -37,6 +37,10 @@ class TestFeatures(unittest.TestCase):
 	def test_hue_histogram(self):
 		histogram = feature_extraction.hue_histogram(self.color_space_image, 16)
 		self.assertTrue(len(histogram) == 16)
+		
+	def test_rand_patches(self):
+		patches = feature_extraction.rand_patch(self.color_space_image, 10, 10)
+		self.assertTrue(len(patches) == 10)
 
 if __name__ == "__main__":
 	unittest.main()

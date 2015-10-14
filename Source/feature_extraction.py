@@ -5,6 +5,7 @@
 
 import sys
 import argparse
+from random import randint
 
 import cv2
 from numpy import concatenate
@@ -51,6 +52,7 @@ def calc_descriptor(data_dictionary, video_path):
 			x, y, w, h = face
 			#histogram = hue_histogram(frame[y:y+h, x:x+w], 32)
 			#histogram = hue_histogram_zone(frame[y:y+h, x:x+w], 32)
+			patches = rand_patch(frame[y:y+h, x:x+w], 10, )
 			
 		video.release()
 		break
@@ -92,7 +94,22 @@ def hue_histogram_zone(image, bins):
 """
 """
 def rand_patch(image, amount, size):
-	pass
+	rows, cols, channels = image.shape
+	#I arbitrarly defined the patch size as a fraction of the height.
+	patch_size = image.shape[0]/size
+	patches = []
+	
+	for i in range(0, amount):
+		rand_row = randint(0, rows - patch_size)
+		rand_col = randint(0, cols - patch_size)
+		
+		patch = image[rand_row:rand_row + patch_size, rand_col:rand_col + patch_size]
+		resized_patch = cv2.resize(imagen, (15, 15))
+		
+		patches.append(resized_patch)
+		
+	return patches
+		
 
 def main(argv=None):
 	input_path = INPUT_PATH
