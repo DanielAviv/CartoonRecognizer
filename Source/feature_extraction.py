@@ -4,9 +4,12 @@
 This module computes the feature from the detected faces by the module of detection.
 """
 
+import file_management as fm
+
 import sys
 import argparse
 from random import randint
+from os.path import join, basename, splitext
 
 import cv2
 from numpy import concatenate
@@ -45,57 +48,62 @@ def parse_input_file(lines):
 """
 """
 def calc_descriptor(data_dictionary, video_path):
-	result = []
+	result = {}
 	
 	for frame_pos, faces in data_dictionary.iteritems():
 		video = cv2.VideoCapture(video_path)
 		video.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_pos)
 		ret, frame = video.read()
+		
+		frame_dictionary = {}
 			
-		for face in faces:
-			x, y, w, h = face
-			#histogram = hue_histogram(frame[y:y+h, x:x+w], 32)
-			#histogram = hue_histogram_zone(frame[y:y+h, x:x+w], 32)
-			patches = rand_patch(frame[y:y+h, x:x+w], 10, )
+		for rectangle in faces[:1]:
+			x, y, w, h = rectangle
+			face = frame[y:y+h, x:x+w]
+			#histogram = hue_histogram(face, 32)
+			histogram = hue_histogram_zone(face, 32)
+			#patches = rand_patch(face, 10, 10)
 			
+			#I convert the rect to str because lists
+			#cannot be keys in a dictionary.
+			frame_dictionary[str(rectangle)] = histogram
+			
+		result[frame_pos] = frame_dictionary
 		video.release()
-		break
 
-	return 0
+	return result
 
 """
 """
 def hue_histogram(image, bins):
-	cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-	hist = cv2.calcHist([image], [0], None, [bins], [0,179])
-	hist_normed = hist/sum(hist)
+	hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+	hist = cv2.calcHist([hsv_image], [0], None, [bins], [0,179])
+	
+	sum_hist = sum(hist)
+	hist_normed = hist
+	if sum_hist != 0:
+		hist_normed = hist/sum(hist)
 	
 	return hist_normed
 	
 """
 """
 def hue_histogram_zone(image, bins):
-	cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-	rows, cols, channels = image.shape
+	hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+	rows, cols, channels = hsv_image.shape
 	
-	a = image[:rows/2, :cols/2]
-	b = image[rows/2:, :cols/2]
-	c = image[:rows/2, cols/2:]
-	d = image[rows/2:, cols/2:]
+	a = hsv_image[:rows/2, :cols/2]
+	b = hsv_image[rows/2:, :cols/2]
+	c = hsv_image[:rows/2, cols/2:]
+	d = hsv_image[rows/2:, cols/2:]
 	
-	hist_a = cv2.calcHist([a], [0], None, [bins], [0,179])
-	hist_b = cv2.calcHist([b], [0], None, [bins], [0,179])
-	hist_c = cv2.calcHist([c], [0], None, [bins], [0,179])
-	hist_d = cv2.calcHist([d], [0], None, [bins], [0,179])
-	full_hist = hue_histogram(image, bins)
+	hist_a = hue_histogram(a, bins)
+	hist_b = hue_histogram(a, bins)
+	hist_c = hue_histogram(a, bins)
+	hist_d = hue_histogram(a, bins)
+	full_hist = hue_histogram(hsv_image, bins)
 	
-	hist_a_normed = hist_a/sum(hist_a)
-	hist_b_normed = hist_b/sum(hist_b)
-	hist_c_normed = hist_c/sum(hist_c)
-	hist_d_normed = hist_d/sum(hist_d)
-	full_hist_normed = full_hist/sum(full_hist)
-	
-	all_hist = (hist_a_normed, hist_b_normed, hist_c_normed, hist_d_normed, full_hist_normed)
+	all_hist = (hist_a, hist_b, hist_c, hist_d, full_hist)
 	return concatenate(all_hist, axis=0)
 
 """
@@ -129,6 +137,7 @@ def main(argv=None):
 	input_file = None
 	
 	try:
+		print "| Computing features, this will take several minutes... |\n"
 		input_file = open(INPUT_PATH, "r")
 
 		file_results = []
@@ -136,10 +145,17 @@ def main(argv=None):
 			if line.startswith("ENDFILE"):
 				parsed_data = parse_input_file(file_results)
 				#We remove the "SOURCE: " tag and the newline character.
-				calc_descriptor(parsed_data, file_results[0][8:-1])
-
+				file_path = file_results[0][8:-1]
+				
+				features = calc_descriptor(parsed_data, file_path)
+				
+				file_name = basename(file_path)
+				feature_file_path = join(OUTPUT_PATH, splitext(file_name)[0] + ".txt")
+				#fm.save_file(features, feature_file_path)
+				print features
+				print " - File : " + file_name + " finished and saved."
+				
 				file_results = []
-				break
 			else:
 				file_results.append(line)
 				

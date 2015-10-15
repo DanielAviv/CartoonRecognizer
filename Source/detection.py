@@ -78,9 +78,11 @@ def do_detect(videos, classifier):
 			frames_seen += 1
 
 		output_file.write("ENDFILE\n")
-		print "\n" + str(frames_analized) + " frames analized."
-		print "From which " + str(frames_with_faces) + " work."
-		print "From which " + str(face_count) + " faces has been found."
+		print "\nFinished: " + video_path
+		print " - " + str(frames_analized) + " frames analized."
+		print " - From which " + str(frames_with_faces) + " work."
+		print " - From which " + str(face_count) + " faces has been found."
+		print "-------------------------------------------------------"
 		video.release()
 		
 	output_file.close()
@@ -99,7 +101,7 @@ def main(argv=None):
 		data_path = sys.stdin.readline()
 	
 	try:
-		videos = [ join(data_path, data) for data in listdir(data_path) if isfile(join(data_path, data)) ][:1]
+		videos = [ join(data_path, data) for data in listdir(data_path) if isfile(join(data_path, data)) ]
 	
 		if detector == "OCV":
 			return do_detect(videos, ".\\Data\\haarcascade_frontalface_default.xml")
