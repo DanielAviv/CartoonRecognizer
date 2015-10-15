@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
+This module computes the feature from the detected faces by the module of detection.
 """
 
 import sys
@@ -17,6 +18,9 @@ __status__ = "Development"
 
 #
 INPUT_PATH = "detection_output.txt"
+
+#
+OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\Features1"
 
 """
 """
@@ -48,7 +52,7 @@ def calc_descriptor(data_dictionary, video_path):
 		video.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_pos)
 		ret, frame = video.read()
 			
-		for face in faces[:1]:
+		for face in faces:
 			x, y, w, h = face
 			#histogram = hue_histogram(frame[y:y+h, x:x+w], 32)
 			#histogram = hue_histogram_zone(frame[y:y+h, x:x+w], 32)
@@ -83,13 +87,16 @@ def hue_histogram_zone(image, bins):
 	hist_b = cv2.calcHist([b], [0], None, [bins], [0,179])
 	hist_c = cv2.calcHist([c], [0], None, [bins], [0,179])
 	hist_d = cv2.calcHist([d], [0], None, [bins], [0,179])
+	full_hist = hue_histogram(image, bins)
 	
 	hist_a_normed = hist_a/sum(hist_a)
 	hist_b_normed = hist_b/sum(hist_b)
 	hist_c_normed = hist_c/sum(hist_c)
 	hist_d_normed = hist_d/sum(hist_d)
+	full_hist_normed = full_hist/sum(full_hist)
 	
-	return concatenate((hist_a_normed, hist_b_normed, hist_c_normed, hist_d_normed), axis=0)
+	all_hist = (hist_a_normed, hist_b_normed, hist_c_normed, hist_d_normed, full_hist_normed)
+	return concatenate(all_hist, axis=0)
 
 """
 """
@@ -104,7 +111,8 @@ def rand_patch(image, amount, size):
 		rand_col = randint(0, cols - patch_size)
 		
 		patch = image[rand_row:rand_row + patch_size, rand_col:rand_col + patch_size]
-		resized_patch = cv2.resize(imagen, (15, 15))
+		#Another arbitrary desition.
+		resized_patch = cv2.resize(patch, (15, 15))
 		
 		patches.append(resized_patch)
 		

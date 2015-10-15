@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This test-case tests the module keyframe.py.
+This test-case tests the module detection.py.
 """
 
 import unittest
@@ -11,7 +11,7 @@ __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
-class TestKeyFrame(unittest.TestCase):
+class TestDetection(unittest.TestCase):
 	def test_1(self):
 		#self.assertEqual('foo'.upper(), 'FOO')
 		pass

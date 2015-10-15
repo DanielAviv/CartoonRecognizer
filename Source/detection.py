@@ -99,10 +99,10 @@ def main(argv=None):
 		data_path = sys.stdin.readline()
 	
 	try:
-		videos = [ join(data_path, data) for data in listdir(data_path) if isfile(join(data_path, data)) ]
+		videos = [ join(data_path, data) for data in listdir(data_path) if isfile(join(data_path, data)) ][:1]
 	
 		if detector == "OCV":
-			return do_detect(videos, ".\\Data\\haarcascade_forntalface_default.xml")
+			return do_detect(videos, ".\\Data\\haarcascade_frontalface_default.xml")
 		elif detector == "IAF":
 			print "Detector not supported yet"
 			return 1
