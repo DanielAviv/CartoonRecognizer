@@ -41,11 +41,11 @@ INPUTS:
  - A text file containing the squares with the detected faces.
 """
 def do_detect(videos, classifier):
-	print classifier
 	face_cascade = cv2.CascadeClassifier(classifier)
-	output_file = open(OUTPUT_FILE_NAME, "a")
+	output_file = open(OUTPUT_FILE_NAME, "w")
 
-	for video_path in videos[:1]:
+	print "Detection started, this will take several minutes."
+	for video_path in videos[:2]:
 		frames_seen = 0
 		frames_analized = 0
 		frames_with_faces = 0
@@ -67,18 +67,22 @@ def do_detect(videos, classifier):
 
 				if len(faces) != 0:
 					frame_position = video.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
-					output_file.write(str(frame_position) + ":")
-					output_file.write(str(faces) + "\n")
+					output_file.write(str(frame_position) + "\n")
+					for face in faces:
+						output_file.write(str(face) + ";")
+					output_file.write("\n")
 					
 					face_count += len(faces)
 					frames_with_faces += 1
 				frames_analized += 1
 			frames_seen += 1
 
-		output_file.write("\n")
-		print str(frames_analized) + " frames analized. "
-		print "From which " + str(frames_with_faces) + " work. "
-		print "From which " + str(face_count) + " faces has been found."
+		output_file.write("ENDFILE\n")
+		print "\nFinished: " + video_path
+		print " - " + str(frames_analized) + " frames analized."
+		print " - From which " + str(frames_with_faces) + " work."
+		print " - From which " + str(face_count) + " faces has been found."
+		print "-------------------------------------------------------"
 		video.release()
 		
 	output_file.close()
@@ -95,22 +99,17 @@ def main(argv=None):
 	if DATA_PATH == "":
 		print("Where is the data located?")
 		data_path = sys.stdin.readline()
-		
-	try:
-		remove(OUTPUT_FILE_NAME)
-	except OSError:
-		pass
 	
 	try:
 		videos = [ join(data_path, data) for data in listdir(data_path) if isfile(join(data_path, data)) ]
 	
 		if detector == "OCV":
-			return do_detect(videos, ".\\Data\\haarcascade_forntalface_default.xml")
+			return do_detect(videos, ".\\Data\\haarcascade_frontalface_default.xml")
 		elif detector == "IAF":
 			print "Detector not supported yet"
 			return 1
 		else:
-			return do_detect(videos, ".\\Data\\animecascade_DAN.xml")
+			return do_detect(videos, ".\\Data\\LBPcascade_animeface_woo.xml")
 			
 	except IOError:
 		print "You must give the data path."
