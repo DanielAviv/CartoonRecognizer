@@ -14,10 +14,10 @@ __status__ = "Development"
 """
 def save_file(data, file_path):
 	new_file = open(file_path, "wb")
-	pickle.dump(data, 2)
+	pickle.dump(data, new_file, 2)
 
 """
 """
 def load_file(file_path):
 	file = open(file_path, "wb")
-	pickle.load(file_path)
+	return pickle.load(file_path)

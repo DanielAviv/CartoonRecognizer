@@ -45,11 +45,6 @@ def parse_input_file(lines):
 	
 	file_dictionary = dict(zip(frames, faces))
 	return file_dictionary
-
-"""
-"""
-def create_output_file(data, dir_path, file_name):
-	print len(data)
 	
 """
 """
@@ -72,7 +67,7 @@ def calc_descriptor(data_dictionary, video_path):
 			
 			#I convert the rect to str because lists
 			#cannot be keys in a dictionary.
-			#frame_dictionary[str(rectangle)] = histogram
+			frame_dictionary[str(rectangle)] = histogram
 			
 		result[frame_pos] = frame_dictionary
 	video.close()
@@ -155,8 +150,8 @@ def main(argv=None):
 				features = calc_descriptor(parsed_data, file_path)
 				
 				file_name = basename(file_path)
-				feature_file_path = join(OUTPUT_PATH, splitext(file_name)[0] + ".txt")
-				#create_output_file(features, feature_file_path, file_name)
+				feature_file_path = join(OUTPUT_PATH, splitext(file_name)[0] + ".p")
+				fm.save_file(features, feature_file_path)
 				
 				print " - File : " + file_name + " finished and saved."
 				
