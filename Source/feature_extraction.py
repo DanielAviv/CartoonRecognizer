@@ -13,6 +13,7 @@ from os.path import join, basename, splitext
 
 import cv2
 from numpy import concatenate
+from moviepy.video.io.ffmpeg_reader import FFMPEG_VideoReader
 
 __author__ = "Daniel Aviv"
 __credits__ = "Juan Manuel Barrios"
@@ -44,17 +45,22 @@ def parse_input_file(lines):
 	
 	file_dictionary = dict(zip(frames, faces))
 	return file_dictionary
+
+"""
+"""
+def create_output_file(data, dir_path, file_name):
+	print len(data)
 	
 """
 """
 def calc_descriptor(data_dictionary, video_path):
 	result = {}
+	video = FFMPEG_VideoReader(video_path, False)
+	video.initialize()
+	video_fps = video.fps
 	
 	for frame_pos, faces in data_dictionary.iteritems():
-		video = cv2.VideoCapture(video_path)
-		video.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, frame_pos)
-		ret, frame = video.read()
-		
+		frame = video.get_frame(frame_pos/video_fps)
 		frame_dictionary = {}
 			
 		for rectangle in faces[:1]:
@@ -66,10 +72,10 @@ def calc_descriptor(data_dictionary, video_path):
 			
 			#I convert the rect to str because lists
 			#cannot be keys in a dictionary.
-			frame_dictionary[str(rectangle)] = histogram
+			#frame_dictionary[str(rectangle)] = histogram
 			
 		result[frame_pos] = frame_dictionary
-		video.release()
+	video.close()
 
 	return result
 
@@ -125,7 +131,6 @@ def rand_patch(image, amount, size):
 		patches.append(resized_patch)
 		
 	return patches
-		
 
 def main(argv=None):
 	input_path = INPUT_PATH
@@ -151,8 +156,8 @@ def main(argv=None):
 				
 				file_name = basename(file_path)
 				feature_file_path = join(OUTPUT_PATH, splitext(file_name)[0] + ".txt")
-				#fm.save_file(features, feature_file_path)
-				print features
+				#create_output_file(features, feature_file_path, file_name)
+				
 				print " - File : " + file_name + " finished and saved."
 				
 				file_results = []
@@ -161,8 +166,12 @@ def main(argv=None):
 				
 		input_file.close()
 		
+		return 0
+		
 	except IOError as e:
 		print "I/O error({0}): {1}".format(e.errno, e.strerror)
+		
+	return 1
 		
 if __name__ == "__main__":
 	main()
