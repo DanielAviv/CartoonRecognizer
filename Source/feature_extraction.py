@@ -20,13 +20,15 @@ __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
-#
+#Path of the file which cpintains the detected faces in the dataset.
 INPUT_PATH = "detection_output.txt"
 
-#
+#Where the features computed by this module will be saved.
 OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\Features1"
 
 """
+This function recieves String representation of a list
+and tranforms it into a list of integers.
 """
 def str_to_array(array_string):
 	string_array = array_string.split(";")
@@ -128,13 +130,23 @@ def rand_patch(image, amount, size):
 	return patches
 
 def main(argv=None):
-	input_path = INPUT_PATH
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-i", "--input_path",
+		help="Path of the text file containing the detected faces", default=INPUT_PATH)
+	parser.add_argument("-o", "--output_path",
+		help="Directory where all the features will be saved", default=INPUT_PATH)
+	argv = parser.parse_args()
 	
-	if INPUT_PATH == "":
+	input_path = argv.input_path
+	output_path = argv.output_path
+	
+	if input_path == "":
 		print("Where is the input file located?")
 		input_path = sys.stdin.readline()
-	
-	input_file = None
+		
+	if output_path == "":
+		print("Where is the output directory located?")
+		output_path = sys.stdin.readline()
 	
 	try:
 		print "| Computing features, this will take several minutes... |\n"
