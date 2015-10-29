@@ -7,7 +7,7 @@ import feature_extraction as fe
 import file_management as fm
 
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, basename
 import argparse
 
 import cv2
@@ -61,21 +61,22 @@ def kNN_scikit(input_features, feature_files, desired_matches):
 	
 """
 """
-def kNN_OCV(input_features, feature_files, desired_matches):
-	input_as_array = np.asarray(input_features, np.float32)
+def kNN_OCV(input_features, data_features, desired_matches):
+	result = []
+	responses = np.asarray(range(0, len(data_features)), np.float32)
 
-	for file_path in feature_files[:1]:
-		dataset_features_dict = fm.load_file(file_path)
-		dataset_features = dataset_features_dict.values()
-		
-		data_as_array = np.asarray(dataset_features, np.float32)
-		responses = np.asarray(range(0, len(data_as_array)), np.float32)
-		
-		knn = cv2.KNearest()
-		knn.train(data_as_array, responses)
-		ret, results, neighbours, dist = knn.find_nearest(input_as_array, 2)
+	knn = cv2.KNearest()
+	knn.train(data_features, responses)
+	ret, results, neighbours, dist = knn.find_nearest(input_features, desired_matches)
 	
-	pass
+	candidates_position_array = []
+	
+	for neighbour_array in neighbours:
+		candidates_position_array.extend(neighbour_array)
+		
+	result = [ data_features[position] for position in candidates_position_array ]
+	
+	return result
 	
 """
 """
@@ -108,7 +109,26 @@ def main(argv=None):
 			for data in listdir(input_images_path) if isfile(join(input_images_path, data)) ]
 			
 		input_features = compute_input_features(input_images)
-		selected_frames = kNN_OCV(input_features, feature_files, MATCHES)
+		input_as_array = np.asarray(input_features, np.float32)
+		
+		candidates = {}
+		
+		for file_path in feature_files:
+			dataset_features_dict = fm.load_file(file_path)
+			dataset_features = dataset_features_dict.values()
+			data_as_array = np.asarray(dataset_features, np.float32)
+			
+			selected_features = kNN_OCV(input_as_array, data_as_array, MATCHES)
+			print len(selected_features)
+
+			for key, value in dataset_features_dict.items():
+				for feature in selected_features:
+					if np.array_equal(feature, value):
+						new_key = basename(file_path) + ":" + key
+						candidates[new_key] = value
+						break
+
+		print len(candidates.keys()) == len(set(candidates.keys()))
 
 	except IOError:
 		print "ERROR: The path provided does not exist"
