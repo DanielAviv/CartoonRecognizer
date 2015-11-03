@@ -21,14 +21,14 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #This is the location of the dataset. If empty, the console UI will ask for it.
-DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset2"
+DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset1"
 
 #This relates to the amount of frames we are going to get:
 #FPS / FRAMESKIP * amount of seconds = amount of frames.
 FRAMESKIP = 10
 
 #This constant determines the name of the output file.
-OUTPUT_FILE_NAME = "detection_output.txt"
+OUTPUT_FILE_NAME = "detection_output_D1.txt"
 
 """
 This method does the detection of the faces.
@@ -44,8 +44,8 @@ def do_detect(videos, classifier):
 	face_cascade = cv2.CascadeClassifier(classifier)
 	output_file = open(OUTPUT_FILE_NAME, "w")
 
-	print "Detection started, this will take several minutes."
-	for video_path in videos[:2]:
+	print "| Detection started, this will take several minutes |"
+	for video_path in videos:
 		frames_seen = 0
 		frames_analized = 0
 		frames_with_faces = 0

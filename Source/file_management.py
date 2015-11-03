@@ -19,5 +19,5 @@ def save_file(data, file_path):
 """
 """
 def load_file(file_path):
-	file = open(file_path, "wb")
-	return pickle.load(file_path)
+	file = open(file_path, "rb")
+	return pickle.load(file)
