@@ -12,7 +12,6 @@
 
 ## How to use
 ### How to train your own detector
-<<<<<<< HEAD
 In this section I will show how to train an object cascade detector using OpenCV applications.
 
 First of all you will need A LOT of images of the object you are looking for, the more the merrier. For a solid and unchanging object like a logo few will suffice, but if you are looking for faces, you'll need hundreds or even thousands examples.
@@ -22,7 +21,5 @@ There is really no "good" number of images for the positive or the negative. You
 
 Once you have all the images you want you will need two files:
 1. The positive file: This file is a ´´´.info´´´ file.
-=======
->>>>>>> origin/master
 
 ## Contact me
