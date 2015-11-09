@@ -52,3 +52,5 @@ Now you will use the next OpenCV application ```opencv_traincascade```. This wil
 For the algorythm to work, NUM_POS needs to be less than the actual number of positive examples (otherwise it will end prematurely), make sure that the width and height is the same that the ones you ued for the vec file. Again, the number of stages and the feature will come from experience. This will output a lot of file, but the one named ```cascade.xml``` will be the one to use.
 
 ## Contact me
+
+You can find my contact information on my GitHub profile page ;)
