@@ -20,7 +20,7 @@ __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
-#
+#The output
 FEATURE_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\FeaturesD1F"
 
 #

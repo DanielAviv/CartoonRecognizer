@@ -25,10 +25,10 @@ DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Da
 
 #This relates to the amount of frames we are going to get:
 #FPS / FRAMESKIP * amount of seconds = amount of frames.
-FRAMESKIP = 10
+FRAMESKIP = 30
 
 #This constant determines the name of the output file.
-OUTPUT_FILE_NAME = "detection_output_D1.txt"
+OUTPUT_FILE_NAME = "detection_output_LBP20_100_110.txt"
 
 """
 This method does the detection of the faces.
@@ -82,7 +82,7 @@ def do_detect(videos, classifier):
 		print " - " + str(frames_analized) + " frames analized."
 		print " - From which " + str(frames_with_faces) + " work."
 		print " - From which " + str(face_count) + " faces has been found."
-		print "-------------------------------------------------------"
+		print "------------------------------------------------||"
 		video.release()
 		
 	output_file.close()
@@ -108,8 +108,8 @@ def main(argv=None):
 		elif detector == "IAF":
 			print "Detector not supported yet"
 			return 1
-		else:
-			return do_detect(videos, ".\\Data\\LBPcascade_animeface_woo.xml")
+		elif detector == "DAN":
+			return do_detect(videos, ".\\data\\CAS\\LBPcascade20_100_110.xml")
 			
 	except IOError:
 		print "You must give the data path."

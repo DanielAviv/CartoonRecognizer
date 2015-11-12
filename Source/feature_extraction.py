@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
-This module computes the feature from the detected faces by the module of detection.
+This module is the second step in the process of the project and
+it serves the purpuse of computing features for the rectangles found by
+the module of detection.
 """
 
 import file_management as fm
@@ -20,7 +22,7 @@ __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
-#Path of the file which cpintains the detected faces in the dataset.
+#Path of the file which cointains the detected faces in the dataset.
 INPUT_PATH = "detection_output_D1.txt"
 
 #Where the features computed by this module will be saved.
@@ -36,6 +38,8 @@ def str_to_array(array_string):
 	return result
 
 """
+This receives each line from the input file from the detection 
+and return a dictionary representation of each of the files.
 """
 def parse_input_file(lines):
 	data_lines = lines[1:]
@@ -49,6 +53,9 @@ def parse_input_file(lines):
 	return file_dictionary
 	
 """
+Gets a dictionary representation of the detected rectangles
+in the dataset and outputs the computed features as a
+dictionary. 
 """
 def calc_descriptor(data_dictionary, video_path):
 	result = {}
@@ -75,6 +82,7 @@ def calc_descriptor(data_dictionary, video_path):
 	return result
 
 """
+
 """
 def hue_histogram(image, bins):
 	hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -131,7 +139,7 @@ def main(argv=None):
 	parser.add_argument("-i", "--input_path",
 		help="Path of the text file containing the detected faces", default=INPUT_PATH)
 	parser.add_argument("-o", "--output_path",
-		help="Directory where all the features will be saved", default=INPUT_PATH)
+		help="Directory where all the features will be saved", default=OUTPUT_PATH)
 	argv = parser.parse_args()
 	
 	input_path = argv.input_path
