@@ -22,7 +22,7 @@ DATA_PATH = ""
 
 #Paths where the output files are located.
 POS_PATH = ".\\Data\\anime_faces.info"
-NEG_PATH = ".\\Data\\not_anime_faces.info"
+NEG_PATH = ".\\Data\\not_anime_faces.txt"
 
 """
 This function creates the info files
@@ -35,9 +35,9 @@ def write_examples(data_path, with_size):
 
 	output_file = None
 	if with_size == True:
-		output_file = open(POS_PATH, "a")
+		output_file = open(POS_PATH, "w")
 	else:
-		output_file = open(NEG_PATH, "a")
+		output_file = open(NEG_PATH, "w")
 
 	for each_positive in positive_img:
 		output_file.write(each_positive)
@@ -63,12 +63,6 @@ def main(argv=None):
 	argv = parser.parse_args()
 	
 	data_path = DATA_PATH
-	
-	try:
-		remove(POS_PATH)
-		remove(NEG_PATH)
-	except OSError:
-		pass
 	
 	if DATA_PATH == "":
 		print("Where is the data located?")

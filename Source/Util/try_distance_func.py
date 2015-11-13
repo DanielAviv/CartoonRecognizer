@@ -19,7 +19,7 @@ caras_path = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\D
 
 all_caras = [ join(caras_path, data) for data in listdir(caras_path) if isfile(join(caras_path, data)) ]
 
-kashima_train_path = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\input\\kashima.png"
+kashima_train_path = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\input\\mikorin2.png"
 kashima_train = cv2.imread(kashima_train_path)
 d = feature_extraction.hue_histogram_zone(kashima_train, 32)
 
