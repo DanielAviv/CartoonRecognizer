@@ -25,10 +25,10 @@ DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Da
 
 #This relates to the amount of frames we are going to get:
 #FPS / FRAMESKIP * amount of seconds = amount of frames.
-FRAMESKIP = 30
+FRAMESKIP = 15
 
 #This constant determines the name of the output file.
-OUTPUT_FILE_NAME = "detection_output_LBP20_100_110.txt"
+OUTPUT_FILE_NAME = "detection_output_LBPe.txt"
 
 """
 This method does the detection of the faces.
@@ -40,7 +40,7 @@ INPUTS:
  OUTPUT:
  - A text file containing the squares with the detected faces.
 """
-def do_detect(videos, classifier):
+def do_detect(videos, classifier, scaleFactor, min_neighbours):
 	face_cascade = cv2.CascadeClassifier(classifier)
 	output_file = open(OUTPUT_FILE_NAME, "w")
 
@@ -63,7 +63,7 @@ def do_detect(videos, classifier):
 			
 			if (frames_seen % FRAMESKIP) == 0:
 				video_continues, frame = video.retrieve()
-				faces = face_cascade.detectMultiScale(frame, 1.3, 5)
+				faces = face_cascade.detectMultiScale(frame, scaleFactor, min_neighbours, flags=0, minSize=(70, 70))
 
 				if len(faces) != 0:
 					frame_position = video.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
@@ -104,12 +104,12 @@ def main(argv=None):
 		videos = [ join(data_path, data) for data in listdir(data_path) if isfile(join(data_path, data)) ]
 	
 		if detector == "OCV":
-			return do_detect(videos, ".\\Data\\haarcascade_frontalface_default.xml")
+			return do_detect(videos, ".\\Data\\haarcascade_frontalface_default.xml", 1.3, 3)
 		elif detector == "IAF":
 			print "Detector not supported yet"
 			return 1
 		elif detector == "DAN":
-			return do_detect(videos, ".\\data\\CAS\\LBPcascade20_100_110.xml")
+			return do_detect(videos, ".\\data\\LBPcascade_animeface.xml", 1.1, 14)
 			
 	except IOError:
 		print "You must give the data path."
