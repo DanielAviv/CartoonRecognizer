@@ -15,6 +15,8 @@ import argparse
 
 import cv2
 
+import time
+
 __author__ = "Daniel Aviv"
 __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
@@ -89,6 +91,7 @@ def do_detect(videos, classifier, scaleFactor, min_neighbours):
 	return 0
 
 def main(argv=None):
+	start = time.time()
 	parser = argparse.ArgumentParser()
 	parser.add_argument("detector", help="Type of detector to use", choices=["OCV", "IAF", "DAN"])
 	argv = parser.parse_args()
@@ -109,11 +112,12 @@ def main(argv=None):
 			print "Detector not supported yet"
 			return 1
 		elif detector == "DAN":
-			return do_detect(videos, ".\\data\\LBPcascade_animeface.xml", 1.1, 14)
+			do_detect(videos, ".\\data\\LBPcascade_animeface.xml", 1.1, 14)
+			print("---RUNTIME: " + str(time.time() - start) + " seg.---")
 			
 	except IOError:
 		print "You must give the data path."
-	
+
 	return 1
 
 if __name__ == "__main__":
