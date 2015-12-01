@@ -11,6 +11,7 @@ from os.path import isfile, join, basename
 import argparse
 
 import cv2
+import numpy as np
 
 __author__ = "Daniel Aviv"
 __credits__ = "Juan Manuel Barrios"
@@ -18,10 +19,10 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #
-GROUND_TRUTH_PATH = "D:\\TrainImages\\ground_truth.txt"
+GROUND_TRUTH_PATH = "..\\Data\\test\\ground_truth.txt"
 
 #
-DATA_PATH = "D:\\TrainImages\\imagenes"
+DATA_PATH = "..\\Data\\test\\data"
 
 #
 DETECTOR_PATH = "D:\\TrainImages\\eLBP22.xml"
@@ -81,56 +82,67 @@ def main(argv=None):
 	classifier = cv2.CascadeClassifier(DETECTOR_PATH)
 	
 	ground_truth_dict = create_ground_truth_dict(GROUND_TRUTH_PATH)
-
-	for image_path in image_path_coll:
-		image = cv2.imread(image_path)
-		detected_faces = classifier.detectMultiScale(image, 1.1, 14, flags=0, minSize=(70, 70))
-		
-		detected_faces = [(x,y,x+w,y+h) for (x,y,w,h) in detected_faces]
-		
-		image_name = basename(image_path)
-		ground_truth_faces = ground_truth_dict[image_name]
-		
-		amount_of_faces += len(ground_truth_faces)
-		
-		match = 0
-
-		for (x,y,w,h) in detected_faces:
-			cv2.rectangle(image,(x,y),(w,h),(255,0,0),2) #AZUL
-
-		for (x,y,w,h) in ground_truth_faces:
-			cv2.rectangle(image,(x,y),(w,h),(0,0,255),2) #ROJO
-		
-		for true_face in ground_truth_faces:
-			best_match = None
-			best_percentage = 0
-			
-			for detected_face in detected_faces:
-				percentage = get_intersection(detected_face, true_face)
-
-				if (percentage > best_percentage) and (percentage > 65):
-					best_match = detected_face
-					best_percentage = percentage
-					
-					if cv2.waitKey(0) & 0xFF == ord('q'):
-						break
-						
-			if (best_percentage == 0):
-				false_neg += 1
-			else:
-				true_pos += 1
-				match += 1
-				
-		false_pos += (len(detected_faces) - match)
-
-	total_pos = (true_pos + false_pos)
-		
-	if total_pos == 0:
-		total_pos = 1
 	
-	precision = float(true_pos)/total_pos
-	recall = float(true_pos)/amount_of_faces
-	print "Presicion: " + str(precision) + ", " + "Recall: " + str(recall)
+	min_neigh_iter = np.arange(5, 30, 5)
+	scale_factor_iter = np.arange(1.3, 1.55, 0.05)
+
+	for scale_factor in scale_factor_iter:
+		for min_neigh in min_neigh_iter:
+			for image_path in image_path_coll:
+				image = cv2.imread(image_path)
+				detected_faces = classifier.detectMultiScale(image, scale_factor, min_neigh, flags=0, minSize=(70, 70))
+				
+				detected_faces = [(x,y,x+w,y+h) for (x,y,w,h) in detected_faces]
+				
+				image_name = basename(image_path)
+				ground_truth_faces = ground_truth_dict[image_name]
+				
+				amount_of_faces += len(ground_truth_faces)
+				
+				match = 0
+				"""
+				for (x,y,w,h) in detected_faces:
+					cv2.rectangle(image,(x,y),(w,h),(255,0,0),2) #AZUL
+
+				for (x,y,w,h) in ground_truth_faces:
+					cv2.rectangle(image,(x,y),(w,h),(0,0,255),2) #ROJO
+					
+				cv2.imshow(basename(image_path),image)
+				
+				if cv2.waitKey(1) & 0xFF == ord('q'):
+					break
+				"""
+				for true_face in ground_truth_faces:
+					best_match = None
+					best_percentage = 0
+					
+					for detected_face in detected_faces:
+						percentage = get_intersection(detected_face, true_face)
+
+						if (percentage > best_percentage) and (percentage > 50):
+							best_match = detected_face
+							best_percentage = percentage
+							
+							if cv2.waitKey(0) & 0xFF == ord('q'):
+								break
+								
+					if (best_percentage == 0):
+						false_neg += 1
+					else:
+						true_pos += 1
+						match += 1
+						
+				false_pos += (len(detected_faces) - match)
+
+			total_pos = (true_pos + false_pos)
+				
+			if total_pos == 0:
+				total_pos = 1
+			
+			precision = float(true_pos)*100/total_pos
+			recall = float(true_pos)*100/amount_of_faces
+			print "SF=" + str(scale_factor) + ", MN=" + str(min_neigh) + "|| Presicion: " + str(precision) + "%, " + "Recall: " + str(recall) + "%"
+
 	return 0
 
 if __name__ == "__main__":
