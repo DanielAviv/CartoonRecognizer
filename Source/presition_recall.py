@@ -12,6 +12,7 @@ import argparse
 
 import cv2
 import numpy as np
+import time
 
 __author__ = "Daniel Aviv"
 __credits__ = "Juan Manuel Barrios"
@@ -77,17 +78,19 @@ def main(argv=None):
 	false_pos = 0
 	false_neg = 0
 	amount_of_faces = 0
+	exec_time = 0
 	
 	image_path_coll = [ join(DATA_PATH, image_name) for image_name in listdir(DATA_PATH) if isfile(join(DATA_PATH, image_name)) ]
 	classifier = cv2.CascadeClassifier(DETECTOR_PATH)
 	
 	ground_truth_dict = create_ground_truth_dict(GROUND_TRUTH_PATH)
 	
-	min_neigh_iter = np.arange(5, 30, 5)
-	scale_factor_iter = np.arange(1.3, 1.55, 0.05)
-
+	min_neigh_iter = np.arange(3, 30, 3)
+	scale_factor_iter = np.arange(1.1, 1.55, 0.05)
+	
 	for scale_factor in scale_factor_iter:
 		for min_neigh in min_neigh_iter:
+			start = time.time()
 			for image_path in image_path_coll:
 				image = cv2.imread(image_path)
 				detected_faces = classifier.detectMultiScale(image, scale_factor, min_neigh, flags=0, minSize=(70, 70))
@@ -139,9 +142,10 @@ def main(argv=None):
 			if total_pos == 0:
 				total_pos = 1
 			
+			end = time.time()
 			precision = float(true_pos)*100/total_pos
 			recall = float(true_pos)*100/amount_of_faces
-			print "SF=" + str(scale_factor) + ", MN=" + str(min_neigh) + "|| Presicion: " + str(precision) + "%, " + "Recall: " + str(recall) + "%"
+			print "SF=" + str(scale_factor) + ", MN=" + str(min_neigh) + "|| Presicion: " + round(str(precision), 4) + "%, " + "Recall: " + round(str(recall), 4) + "%, Exec. time: " + str(end - start) + "sec."
 
 	return 0
 
