@@ -145,7 +145,7 @@ def main(argv=None):
 			end = time.time()
 			precision = float(true_pos)*100/total_pos
 			recall = float(true_pos)*100/amount_of_faces
-			print "SF=" + str(scale_factor) + ", MN=" + str(min_neigh) + "|| Presicion: " + str(round(precision, 4)) + "%, " + "Recall: " + str(round(recall, 4)) + "%, Exec. time: " + str(end - start) + "sec."
+			print "SF=" + str(scale_factor) + ", MN=" + str(min_neigh) + "|| Presicion: " + str(round(precision, 4)) + "%, " + "Recall: " + str(round(recall, 4)) + "%, Exec. time: " + str(round(end - start, 3)) + "sec."
 
 	return 0
 
