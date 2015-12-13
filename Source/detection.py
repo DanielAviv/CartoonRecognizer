@@ -30,7 +30,7 @@ DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Da
 FRAMESKIP = 10
 
 #This constant determines the path of the folder containing the output files.
-OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDet1"
+OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results"
 
 """
 This method does the detection of the faces.
@@ -74,6 +74,7 @@ def do_detect(videos, classifier, scaleFactor, min_neighbours):
 				if len(faces) != 0:
 					frame_position = video.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
 					output_file.write(str(frame_position) + "\n")
+					
 					for face in faces:
 						output_file.write(str(face) + ";")
 					output_file.write("\n")

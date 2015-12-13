@@ -103,7 +103,7 @@ def main(argv=None):
 				amount_of_faces += len(ground_truth_faces)
 				
 				match = 0
-				
+				"""
 				for (x,y,w,h) in detected_faces:
 					cv2.rectangle(image,(x,y),(w,h),(255,0,0),2) #AZUL
 
@@ -114,7 +114,7 @@ def main(argv=None):
 				
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 					break
-				
+				"""
 				for true_face in ground_truth_faces:
 					best_match = None
 					best_percentage = 0

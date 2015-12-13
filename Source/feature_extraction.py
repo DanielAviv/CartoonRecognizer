@@ -18,13 +18,15 @@ import cv2
 from numpy import concatenate
 from moviepy.video.io.ffmpeg_reader import FFMPEG_VideoReader
 
+from time import sleep
+
 __author__ = "Daniel Aviv"
 __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #Path of the files which cointains the detected faces in the dataset.
-INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDet1"
+INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\ResDet1"
 
 #Where the features computed by this module will be saved.
 OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeat1"
@@ -68,12 +70,21 @@ def calc_descriptor(data_dictionary, video_path):
 		for rectangle in faces:
 			x, y, w, h = rectangle
 			face = frame[y:y+h, x:x+w]
-			histogram = hue_histogram_zone(face, 32)
+			
+			for (x,y,w,h) in faces:
+				cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2) #ROJO
+					
+			cv2.imshow("frame", frame)
+			sleep(3)
+			if cv2.waitKey(1) & 0xFF == ord('q'):
+				break
+			
+			#histogram = hue_histogram_zone(face, 32)
 			
 			#I convert the rect to str because lists
 			#cannot be keys in a dictionary.
 			dict_key = str(frame_pos) + ":" + str(rectangle)
-			result[dict_key] = histogram
+			#result[dict_key] = histogram
 
 	video.close()
 	return result
