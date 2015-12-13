@@ -11,7 +11,8 @@ import file_management as fm
 import sys
 import argparse
 from random import randint
-from os.path import join, basename, splitext
+from os import listdir
+from os.path import join, basename, splitext, isfile
 
 import cv2
 from numpy import concatenate
@@ -22,11 +23,11 @@ __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
-#Path of the file which cointains the detected faces in the dataset.
-INPUT_PATH = "detection_output_D1.txt"
+#Path of the files which cointains the detected faces in the dataset.
+INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDet1"
 
 #Where the features computed by this module will be saved.
-OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\FeaturesD1F"
+OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeat1"
 
 """
 This function recieves String representation of a list
@@ -42,12 +43,10 @@ This receives each line from the input file from the detection
 and return a dictionary representation of each of the files.
 """
 def parse_input_file(lines):
-	data_lines = lines[1:]
-	
 	#This extracts the lines in the file in odd and even positions,
 	#removes the unnecessary characters and parses them as readable data.
-	frames = [ float(lines[:-1]) for lines in data_lines[::2] ]
-	faces = [ str_to_array(lines[:-2]) for lines in data_lines[1::2] ]
+	frames = [ float(line[:-1]) for line in lines[::2] ]
+	faces = [ str_to_array(line[:-2]) for line in lines[1::2] ]
 	
 	file_dictionary = dict(zip(frames, faces))
 	return file_dictionary
@@ -62,16 +61,14 @@ def calc_descriptor(data_dictionary, video_path):
 	video = FFMPEG_VideoReader(video_path, False)
 	video.initialize()
 	video_fps = video.fps
-	
+
 	for frame_pos, faces in data_dictionary.iteritems():
 		frame = video.get_frame(frame_pos/video_fps)
 			
 		for rectangle in faces:
 			x, y, w, h = rectangle
 			face = frame[y:y+h, x:x+w]
-			#histogram = hue_histogram(face, 32)
 			histogram = hue_histogram_zone(face, 32)
-			#patches = rand_patch(face, 10, 10)
 			
 			#I convert the rect to str because lists
 			#cannot be keys in a dictionary.
@@ -82,7 +79,6 @@ def calc_descriptor(data_dictionary, video_path):
 	return result
 
 """
-
 """
 def hue_histogram(image, bins):
 	hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -115,6 +111,7 @@ def hue_histogram_zone(image, bins):
 	return concatenate(all_hist, axis=0)
 
 """
+This was a failed experiment
 """
 def rand_patch(image, amount, size):
 	rows, cols, channels = image.shape
@@ -155,33 +152,28 @@ def main(argv=None):
 	
 	try:
 		print "| Computing features, this will take several minutes... |\n"
-		input_file = open(INPUT_PATH, "r")
+		detection_files = [ join(input_path, data) for data in listdir(input_path) if isfile(join(input_path, data)) ]
+		
+		for file_path in detection_files:
+			file = open(file_path, "r")	
+			lines = [ line for line in file ][:-1]
+			parsed_data = parse_input_file(lines[1:])
+			
+			#We remove the "SOURCE: " tag and the newline character.
+			source_path = lines[0][8:-1]
+			
+			features = calc_descriptor(parsed_data, source_path)
 
-		file_results = []
-		for line in input_file:	
-			if line.startswith("ENDFILE"):
-				parsed_data = parse_input_file(file_results)
-				#We remove the "SOURCE: " tag and the newline character.
-				file_path = file_results[0][8:-1]
-				
-				features = calc_descriptor(parsed_data, file_path)
-				
-				file_name = basename(file_path)
-				feature_file_path = join(OUTPUT_PATH, splitext(file_name)[0] + ".p")
-				fm.save_file(features, feature_file_path)
-				
-				print " - File : " + file_name + " finished and saved."
-				
-				file_results = []
-			else:
-				file_results.append(line)
-				
-		input_file.close()
+			file_name = basename(source_path)
+			feature_file_path = join(OUTPUT_PATH, splitext(file_name)[0] + ".p")
+			fm.save_file(features, feature_file_path)
+
+			print " - File : " + file_name + " finished and saved."
 		
 		return 0
 		
 	except IOError as e:
-		print "I/O error({0}): {1}".format(e.errno, e.strerror)
+		print "The directory used to store or extract the descriptors does not exists."
 		
 	return 1
 		
