@@ -78,15 +78,15 @@ def main(argv=None):
 	false_pos = 0
 	false_neg = 0
 	amount_of_faces = 0
-	exec_time = 0
+	file = open("output_final.txt", 'w')
 	
 	image_path_coll = [ join(DATA_PATH, image_name) for image_name in listdir(DATA_PATH) if isfile(join(DATA_PATH, image_name)) ]
 	classifier = cv2.CascadeClassifier(DETECTOR_PATH)
 	
 	ground_truth_dict = create_ground_truth_dict(GROUND_TRUTH_PATH)
 	
-	min_neigh_iter = np.arange(3, 30, 3)
-	scale_factor_iter = np.arange(1.1, 1.55, 0.05)
+	min_neigh_iter = np.arange(17, 31, 1)
+	scale_factor_iter = np.arange(1.17, 1.51, 0.01)
 	
 	for scale_factor in scale_factor_iter:
 		for min_neigh in min_neigh_iter:
@@ -103,7 +103,7 @@ def main(argv=None):
 				amount_of_faces += len(ground_truth_faces)
 				
 				match = 0
-				"""
+				
 				for (x,y,w,h) in detected_faces:
 					cv2.rectangle(image,(x,y),(w,h),(255,0,0),2) #AZUL
 
@@ -114,7 +114,7 @@ def main(argv=None):
 				
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 					break
-				"""
+				
 				for true_face in ground_truth_faces:
 					best_match = None
 					best_percentage = 0
@@ -145,8 +145,17 @@ def main(argv=None):
 			end = time.time()
 			precision = float(true_pos)*100/total_pos
 			recall = float(true_pos)*100/amount_of_faces
-			print "SF=" + str(scale_factor) + ", MN=" + str(min_neigh) + "|| Presicion: " + str(round(precision, 4)) + "%, " + "Recall: " + str(round(recall, 4)) + "%, Exec. time: " + str(round(end - start, 3)) + "sec."
+			
+			output = "SF=" + str(scale_factor) + ", MN=" + str(min_neigh) + "|| Presicion: " + str(round(precision, 4)) + "%, " + "Recall: " + str(round(recall, 4)) + "%, Exec.time: " + str(round(end - start, 3)) + "sec.\n"
+			file.write(output)
+			print output
 
+			true_pos = 0
+			false_pos = 0
+			false_neg = 0
+			amount_of_faces = 0
+	
+	file.close()
 	return 0
 
 if __name__ == "__main__":

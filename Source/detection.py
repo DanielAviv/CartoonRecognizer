@@ -23,14 +23,14 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #This is the location of the dataset. If empty, the console UI will ask for it.
-DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset1"
+DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset2"
 
 #This relates to the amount of frames we are going to get:
 #FPS / FRAMESKIP * amount of seconds = amount of frames.
-FRAMESKIP = 15
+FRAMESKIP = 10
 
-#This constant determines the name of the output file.
-OUTPUT_FILE_NAME = "detection_output_LBPe.txt"
+#This constant determines the path of the folder containing the output files.
+OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDet1"
 
 """
 This method does the detection of the faces.
@@ -40,19 +40,23 @@ INPUTS:
  the detection.
  
  OUTPUT:
- - A text file containing the squares with the detected faces.
+ - A text file containing the squares with the detected faces
+ for each video.
 """
 def do_detect(videos, classifier, scaleFactor, min_neighbours):
 	face_cascade = cv2.CascadeClassifier(classifier)
-	output_file = open(OUTPUT_FILE_NAME, "w")
-
+	output_counter = 0
+	
 	print "| Detection started, this will take several minutes |"
+	
 	for video_path in videos:
 		frames_seen = 0
 		frames_analized = 0
 		frames_with_faces = 0
 		face_count = 0
 		
+		output_file_name = "output" + str(output_counter) + ".txt"
+		output_file = open(join(OUTPUT_PATH, output_file_name), "w")
 		output_file.write("SOURCE: " + video_path + "\n")
 		
 		video = cv2.VideoCapture(video_path)
@@ -85,9 +89,11 @@ def do_detect(videos, classifier, scaleFactor, min_neighbours):
 		print " - From which " + str(frames_with_faces) + " work."
 		print " - From which " + str(face_count) + " faces has been found."
 		print "------------------------------------------------||"
-		video.release()
 		
-	output_file.close()
+		output_file.close()
+		output_counter += 1
+		
+		video.release()
 	return 0
 
 def main(argv=None):
@@ -112,8 +118,9 @@ def main(argv=None):
 			print "Detector not supported yet"
 			return 1
 		elif detector == "DAN":
-			do_detect(videos, ".\\data\\LBPcascade_animeface.xml", 1.1, 14)
+			do_detect(videos, ".\\data\\eLBP22.xml", 1.3, 22)
 			print("---RUNTIME: " + str(time.time() - start) + " seg.---")
+			return 0
 			
 	except IOError:
 		print "You must give the data path."
