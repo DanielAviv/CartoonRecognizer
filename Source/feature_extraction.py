@@ -16,9 +16,8 @@ from os.path import join, basename, splitext, isfile
 
 import cv2
 from numpy import concatenate
-from moviepy.video.io.ffmpeg_reader import FFMPEG_VideoReader
 
-from time import sleep
+import time
 
 __author__ = "Daniel Aviv"
 __credits__ = "Juan Manuel Barrios"
@@ -26,7 +25,7 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #Path of the files which cointains the detected faces in the dataset.
-INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\ResDet1"
+INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDet1"
 
 #Where the features computed by this module will be saved.
 OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeat1"
@@ -50,7 +49,7 @@ def parse_input_file(lines):
 	frames = [ float(line[:-1]) for line in lines[::2] ]
 	faces = [ str_to_array(line[:-2]) for line in lines[1::2] ]
 	
-	file_dictionary = dict(zip(frames, faces))
+	file_dictionary = zip(frames, faces)
 	return file_dictionary
 	
 """
@@ -60,33 +59,39 @@ dictionary.
 """
 def calc_descriptor(data_dictionary, video_path):
 	result = {}
-	video = FFMPEG_VideoReader(video_path, False)
-	video.initialize()
-	video_fps = video.fps
+	frame_counter = 0
+	dictionary_length = len(data_dictionary)
 
-	for frame_pos, faces in data_dictionary.iteritems():
-		frame = video.get_frame(frame_pos/video_fps)
+	video = cv2.VideoCapture(video_path)
+
+	while(video.isOpened()):
+		video_continues = video.grab()
 			
-		for rectangle in faces:
-			x, y, w, h = rectangle
-			face = frame[y:y+h, x:x+w]
-			
-			for (x,y,w,h) in faces:
-				cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2) #ROJO
-					
-			cv2.imshow("frame", frame)
-			sleep(3)
-			if cv2.waitKey(1) & 0xFF == ord('q'):
+		if video_continues == False:
+			break
+		
+		target = data_dictionary[frame_counter]
+		current_position = video.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
+		
+		if(current_position == target[0]):
+			if(frame_counter >= dictionary_length - 1):
 				break
 			
-			#histogram = hue_histogram_zone(face, 32)
-			
-			#I convert the rect to str because lists
-			#cannot be keys in a dictionary.
-			dict_key = str(frame_pos) + ":" + str(rectangle)
-			#result[dict_key] = histogram
+			video_continues, frame = video.retrieve()
 
-	video.close()
+			for rectangle in target[1]:
+				x, y, w, h = rectangle
+				face = frame[y:y+h, x:x+w]
+				histogram = hue_histogram_zone(face, 32)
+				
+				#I convert the rect to str because lists
+				#cannot be keys in a dictionary.
+				dict_key = str(target[0]) + ":" + str(rectangle)
+				result[dict_key] = histogram
+			
+			frame_counter += 1
+
+	video.release()
 	return result
 
 """
@@ -152,6 +157,7 @@ def main(argv=None):
 	
 	input_path = argv.input_path
 	output_path = argv.output_path
+	start = time.time()
 	
 	if input_path == "":
 		print("Where is the input file located?")
@@ -181,6 +187,7 @@ def main(argv=None):
 
 			print " - File : " + file_name + " finished and saved."
 		
+		print("---RUNTIME: " + str(time.time() - start) + " seg.---")
 		return 0
 		
 	except IOError as e:

@@ -6,3 +6,4 @@
 *.vec
 *.info
 *.mp4
+Source/util/check_final_results.py

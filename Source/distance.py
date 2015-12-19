@@ -21,13 +21,13 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #The output
-FEATURE_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\FeaturesD1F"
+FEATURE_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\ResFeat1"
 
 #
 INPUT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\input"
 
 #
-MATCHES = 5
+MATCHES = 15
 
 #
 FINALISTS = 5
@@ -98,14 +98,10 @@ def compute_input_features(input_paths):
 	return result
 		
 def main(argv=None):
-	"""
-	parser = argparse.ArgumentParser()
-	parser.add_argument("feature_directory", help="")
-	parser.add_argument("input_images", help="")
-	argv = parser.parse_args()
-	"""
 	feature_directory = FEATURE_DIRECTORY
 	input_images_path = INPUT_DIRECTORY
+	
+	output_file = open("output_distance.txt", "w")
 
 	try:
 		feature_files = [ join(feature_directory, data)
@@ -131,8 +127,12 @@ def main(argv=None):
 				
 		final_candidates, distance = kNN_OCV(input_as_array, candidates, MATCHES)
 		matches = zip(final_candidates, distance)
-		
+
 		final_results = vote(matches, FINALISTS)
+		
+		print("Done! Output File generated")
+		for result in final_results:
+			output_file.write(result + "\n")
 
 	except IOError:
 		print "ERROR: The path provided does not exist"
