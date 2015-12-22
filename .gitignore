@@ -7,3 +7,5 @@
 *.info
 *.mp4
 Source/util/check_final_results.py
+*.xlsx
+Data/FeatureEvaluation/check_final_results.py

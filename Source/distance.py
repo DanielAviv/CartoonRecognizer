@@ -20,17 +20,18 @@ __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
+ARCH = "q9"
 #The output
-FEATURE_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\ResFeat1"
+FEATURE_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\ResFeat16"
 
 #
-INPUT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\input"
+INPUT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\FeatureEvaluation\\" + ARCH
 
 #
-MATCHES = 15
+MATCHES = 32
 
 #
-FINALISTS = 5
+FINALISTS = 32
 
 """
 """
@@ -91,7 +92,7 @@ def compute_input_features(input_paths):
 
 	for image_path in input_paths:
 		image = cv2.imread(image_path, 1)
-		image_features = fe.hue_histogram_zone(image, 32)
+		image_features = fe.hue_histogram_zone(image, 16)
 		
 		result.append(image_features)
 		
@@ -101,7 +102,7 @@ def main(argv=None):
 	feature_directory = FEATURE_DIRECTORY
 	input_images_path = INPUT_DIRECTORY
 	
-	output_file = open("output_distance.txt", "w")
+	output_file = open(ARCH + ".txt", "w")
 
 	try:
 		feature_files = [ join(feature_directory, data)

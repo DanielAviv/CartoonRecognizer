@@ -28,7 +28,7 @@ __status__ = "Development"
 INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDet1"
 
 #Where the features computed by this module will be saved.
-OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeat1"
+OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeat16"
 
 """
 This function recieves String representation of a list
@@ -82,7 +82,7 @@ def calc_descriptor(data_dictionary, video_path):
 			for rectangle in target[1]:
 				x, y, w, h = rectangle
 				face = frame[y:y+h, x:x+w]
-				histogram = hue_histogram_zone(face, 32)
+				histogram = hue_histogram_zone(face, 16)
 				
 				#I convert the rect to str because lists
 				#cannot be keys in a dictionary.
