@@ -25,10 +25,10 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #Path of the files which cointains the detected faces in the dataset.
-INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDet1"
+INPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDetDef"
 
 #Where the features computed by this module will be saved.
-OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeat16"
+OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeatDef32"
 
 """
 This function recieves String representation of a list
@@ -82,7 +82,7 @@ def calc_descriptor(data_dictionary, video_path):
 			for rectangle in target[1]:
 				x, y, w, h = rectangle
 				face = frame[y:y+h, x:x+w]
-				histogram = hue_histogram_zone(face, 16)
+				histogram = hue_histogram_zone(face, 32)
 				
 				#I convert the rect to str because lists
 				#cannot be keys in a dictionary.

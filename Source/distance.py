@@ -20,12 +20,12 @@ __credits__ = "Juan Manuel Barrios"
 __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
-ARCH = "q9"
+ARCH = "q0"
 #The output
-FEATURE_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\ResFeat16"
+FEATURE_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResFeatDef32"
 
 #
-INPUT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\FeatureEvaluation\\" + ARCH
+INPUT_DIRECTORY = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\FeatureEvaluation\\Queries\\" + ARCH
 
 #
 MATCHES = 32
@@ -92,7 +92,7 @@ def compute_input_features(input_paths):
 
 	for image_path in input_paths:
 		image = cv2.imread(image_path, 1)
-		image_features = fe.hue_histogram_zone(image, 16)
+		image_features = fe.hue_histogram_zone(image, 32)
 		
 		result.append(image_features)
 		

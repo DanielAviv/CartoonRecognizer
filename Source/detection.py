@@ -23,14 +23,14 @@ __email__ = "daniel_avivnotario@hotmail.com"
 __status__ = "Development"
 
 #This is the location of the dataset. If empty, the console UI will ask for it.
-DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset2"
+DATA_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Data\\Dataset"
 
 #This relates to the amount of frames we are going to get:
 #FPS / FRAMESKIP * amount of seconds = amount of frames.
 FRAMESKIP = 10
 
 #This constant determines the path of the folder containing the output files.
-OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results"
+OUTPUT_PATH = "D:\\Mis Documentos\\MaterialU\\Memoria\\CartoonRecognizer\\Results\\ResDetDef"
 
 """
 This method does the detection of the faces.
